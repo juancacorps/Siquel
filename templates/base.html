@@ -1,0 +1,20 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+{% extends 'bootstrap/base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    SQL Es|
+    {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+</head>
+<body>
+    <header>
+        {% include 'navbar.html'%}
+    </header>
+    {% block content %}
+   <h1>Aqui tenes que agregar todo el html</h1>
+   {% endblock %}
+</body>
+</html>
