@@ -19,15 +19,6 @@ def index():
         404 y 500'''
     return render_template('base.html')
 
-@app.route('/documentation')
-def documentation():
-    ''' Esto no lleva codigo python, solamente codigo html y css para el diseño
-        de documetacion o manera de utilizar este programa, tomar como referencia la pagina,
-        de FAST API (Googlearlo) la parte de la documentacion tendra muy presente 
-        todo el fluyo de trabajo, por tal motivo que trabajara de la mano con la persona
-        de conexion para hacer la base de datos y tener un log de registros, las contraseñas
-        tendran que pasar por un algoritmo de hashing para tener una seguridad'''
-    return render_template('documentation.html')
 
 @app.route('/conections', methods=['GET', 'POST'])
 def conection():
@@ -40,14 +31,20 @@ def conection():
     forms = Connection_forms()
     if forms.validate_on_submit():
         #execute_query(values)
-        return redirect('query')
+        host = forms.host.data
+        user = forms.host.data
+        password =  forms.host.data
+        s = translate(host,user,password)
+        return redirect('traslate')
+        return render_template('query', )
+        
     context = {'forms': forms}
 
     return render_template('conection.html', **context)
     
     
-@app.route('/query')
-def execute_query():
+@app.route('/traslate')
+def traslate():
     '''Codigo para ejecutar la query
         Basicamente seria de tener un cuadro donde la persona
         Escriba su codigo en Español, usar un try y except para manejar en
