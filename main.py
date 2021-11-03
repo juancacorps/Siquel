@@ -81,19 +81,41 @@ def traslate():
 
     if trans.validate_on_submit():
         sql_es = str(trans.esp_sql.data).upper()
-        reservado = ["SELECT", "FROM", "CREATE", "TABLE",
+        reservado = ["SELECT","FROM", "CREATE", "TABLE",
                     "UPDATE", "INSERT", "SET", "INTO", "VALUES", "BETWEEN",
                      "IN", "AND", "OR", "NOT", "PRIMARY", "KEY", "DELETE", "DROP",
                      "UNIQUE", "DEFAULT", "CASE", "FOREIGN", "GROUP", "BY", "MIN",
-                     "MAX", "SUM", "AVG", "OFFSET", "WHERE", "NULL", "BEGIN"]
-        x = str(sp_sql).upper().split()
+                     "MAX", "SUM", "AVG", "OFFSET", "WHERE", "NULL", "BEGIN", ]
+        x = str(sql_es).upper().split()
+        
+        
         for i in x:
-            ingles = GoogleTranslator(source='auto', target='en').translate(i)
-            print(ingles)
-            if ingles in reservado:
-                sql_es = sql_es.replace(i,ingles)
-                
-
+            try:
+                ingles = GoogleTranslator(source='auto', target='en').translate(i)
+                print(ingles)
+                if ingles in reservado:
+                    sql_es = sql_es.replace(i,ingles) 
+                else:
+                    sql_es = sql_es.replace("SELECCIONAR" or "seleccionar", "SELECT") 
+                    sql_es = sql_es.replace("DENTRO" or "dentro", "INTO") 
+                    sql_es = sql_es.replace("VALORES" or "valores", "VALUES") 
+                    
+                         
+            except:
+                print(i)
+        
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute(sql_es.lower())
+            flash("Se ejecutó exitosamente")
+        except Exception as e:
+            e = str(e).replace('(','').replace(')','').replace('using password: YES','').split(',')
+            translated = GoogleTranslator(source='auto', target='es').translate(e[1])
+            flash(translated)
+        
+            '''hacer lista de querys para comparar la cadena x'''                    
+            '''Enviar los querys a la bd'''
+        
         translate = trans.translate.data = sql_es
         return render_template('execute_query.html', **context)
 
