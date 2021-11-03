@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.wrappers import request
-from forms import Connection_forms
+from forms import Connection_forms, QueryFormExecute
 from flask_mysqldb import MySQL
 from configurate import config
 from deep_translator import GoogleTranslator
@@ -71,21 +71,33 @@ def conection():
     
 
    
-
-
-
-    
-    
-@app.route('/traslate')
+@app.route('/traslate', methods=['POST', 'GET'])
 def traslate():
-    '''Codigo para ejecutar la query
-        Basicamente seria de tener un cuadro donde la persona
-        Escriba su codigo en Español, usar un try y except para manejar en
-        los errores de sintaxis y con la funcion replace sustituir lo de español
-        a ingles para ejecutar la query.
-        La persona acargo de la ruta conection te tiene que pasar
-        los datos de la conexion, solo para recibirlo y ejecutarlo'''
-    return render_template('execute_query.html')
+    trans = QueryFormExecute()
+    sp_sql = trans.esp_sql.data
+    translate = trans.translate.data
+    context = {'trans_form': trans}
+
+
+    if trans.validate_on_submit():
+        sql_es = str(trans.esp_sql.data).upper()
+        reservado = ["SELECT", "FROM", "CREATE", "TABLE",
+                    "UPDATE", "INSERT", "SET", "INTO", "VALUES", "BETWEEN",
+                     "IN", "AND", "OR", "NOT", "PRIMARY", "KEY", "DELETE", "DROP",
+                     "UNIQUE", "DEFAULT", "CASE", "FOREIGN", "GROUP", "BY", "MIN",
+                     "MAX", "SUM", "AVG", "OFFSET", "WHERE", "NULL", "BEGIN"]
+        x = str(sp_sql).upper().split()
+        for i in x:
+            ingles = GoogleTranslator(source='auto', target='en').translate(i)
+            print(ingles)
+            if ingles in reservado:
+                sql_es = sql_es.replace(i,ingles)
+                
+
+        translate = trans.translate.data = sql_es
+        return render_template('execute_query.html', **context)
+
+    return render_template('execute_query.html', **context)
 
 if __name__ == '__main__':
     app.run(debug=True, host = 'localhost')

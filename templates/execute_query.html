@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    AQUI VA TODO EL CODIGO HTML
-</body>
-</html>
+{% extends 'base.html'%} {% import 'bootstrap/wtf.html' as wtf %} {% block title %} {{ super() }} Conectar {% endblock%} {% block content %} {% for message in get_flashed_messages() %}
+<div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" data-dismiss='alert' class='close'>&times;
+    </button> {{message}}
+</div>
+{% endfor %} {% block scripts %} {{super()}} {% endblock %}
+<div class="container signup">
+    <div class="row">
+        <center>
+            <h2>Conectate</h2><br></center>
+
+
+        {{ wtf.quick_form(trans_form) }}
+
+
+    </div>
+</div>
+{% endblock %}

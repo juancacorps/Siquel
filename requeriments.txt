@@ -3,3 +3,4 @@ flask-bootstrap
 flask-wtf
 wtforms
 deep_translator
+flask-mysqldb

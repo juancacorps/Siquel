@@ -13,4 +13,6 @@ class Connection_forms(FlaskForm):
 
 # Utilizar solamente si quieren usar Flask form para los campos
 class QueryFormExecute(FlaskForm):
-    pass
+    esp_sql = StringField('SQL en Español')
+    translate = StringField('Traslado')
+    submit = SubmitField('Convertir')
