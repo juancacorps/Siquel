@@ -1,19 +1,15 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.wrappers import request
 from forms import Connection_forms
 from flask_mysqldb import MySQL
+from configurate import config
+from deep_translator import GoogleTranslator
 
     
-app = Flask(__name__)
-
-# mysql connection
-
-
-
-SECRET_KEY = 'super_secreto'
-app.config['SECRET_KEY'] = SECRET_KEY
+app = config()
+mysql = MySQL(app)
 bootstrap = Bootstrap(app)
 
 @app.route('/')
@@ -44,32 +40,32 @@ def conection():
     passw=formas.password.data
     nameDB=formas.name_db.data
     if formas.validate_on_submit():
-
-
-        app.config['MYSQL_HOST'] = host
-        app.config['MYSQL_PORT'] = 3306
-        app.config['MYSQL_USER'] = user
-        app.config['MYSQL_PASSWORD'] = passw
-        app.config['MYSQL_USE_UNICODE'] =  True
-        app.config['MYSQL_CONNECT_TIMEOUT'] = 10
-        app.config['MYSQL_DATABASE_SOCKET'] = None
-        app.config['MYSQL_UNIX_SOCKET'] = None
-        app.config['MYSQL_CHARSET'] =  'utf8'
-        app.config['MYSQL_SQL_MODE'] =  None
-        app.config['MYSQL_CURSORCLASS'] =  None
-        app.config['MYSQL_READ_DEFAULT_FILE'] =  None
-        app.config['MYSQL_DB'] = nameDB
-        mysql =MySQL(app)
-
-        cur = mysql.connection.cursor()
-        if cur:
-        
-          return redirect(url_for('traslate'))
-        else :
+        try:
+            app.config['MYSQL_HOST'] = host
+            app.config['MYSQL_PORT'] = 3306
+            app.config['MYSQL_USER'] = user
+            app.config['MYSQL_PASSWORD'] = passw
+            app.config['MYSQL_USE_UNICODE'] =  True
+            app.config['MYSQL_CONNECT_TIMEOUT'] = 10
+            app.config['MYSQL_DATABASE_SOCKET'] = None
+            app.config['MYSQL_UNIX_SOCKET'] = None
+            app.config['MYSQL_CHARSET'] =  'utf8'
+            app.config['MYSQL_SQL_MODE'] =  None
+            app.config['MYSQL_CURSORCLASS'] =  None
+            app.config['MYSQL_READ_DEFAULT_FILE'] =  None
+            app.config['MYSQL_DB'] = nameDB
+            cur = mysql.connection.cursor()
+            return redirect(url_for('traslate'))
+        except Exception as e:
+            e = str(e).replace('(','').replace(')','').replace('using password: YES','').split(',')
+            translated = GoogleTranslator(source='auto', target='es').translate(e[1])
+            flash(translated)
             context = {'forms': formas}
             return render_template('conection.html', **context)
 
+
     context = {'forms': formas}
+ 
     return render_template('conection.html', **context)
 
     

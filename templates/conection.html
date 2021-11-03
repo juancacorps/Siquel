@@ -4,7 +4,18 @@
   {{ super() }}
   Conectar 
 {% endblock%}
+               
 {% block content %}
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button"
+    data-dismiss = 'alert'
+    class = 'close'>&times;
+    </button> 
+    {{message}}
+</div>
+{% endfor %}
+{% block scripts %} {{super()}} {% endblock %}
   <div class="container signup" >
     <div class="row">
         <center><h2>Conectate</h2><br></center>
