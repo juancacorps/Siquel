@@ -1,9 +1,17 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect, CSRFError
+from werkzeug.wrappers import request
 from forms import Connection_forms
+from flask_mysqldb import MySQL
+
     
 app = Flask(__name__)
+
+# mysql connection
+
+
+
 SECRET_KEY = 'super_secreto'
 app.config['SECRET_KEY'] = SECRET_KEY
 bootstrap = Bootstrap(app)
@@ -28,19 +36,48 @@ def conection():
        Es decir cuando seleccione Mysql hacer la conexion para mandarla a la funcion
        query'''
 
-    forms = Connection_forms()
-    if forms.validate_on_submit():
-        #execute_query(values)
-        host = forms.host.data
-        user = forms.host.data
-        password =  forms.host.data
-        s = translate(host,user,password)
-        return redirect('traslate')
-        return render_template('query', )
-        
-    context = {'forms': forms}
+    formas= Connection_forms()
 
+    
+    host= formas.host.data
+    user= formas.user.data
+    passw=formas.password.data
+    nameDB=formas.name_db.data
+    if formas.validate_on_submit():
+
+
+        app.config['MYSQL_HOST'] = host
+        app.config['MYSQL_PORT'] = 3306
+        app.config['MYSQL_USER'] = user
+        app.config['MYSQL_PASSWORD'] = passw
+        app.config['MYSQL_USE_UNICODE'] =  True
+        app.config['MYSQL_CONNECT_TIMEOUT'] = 10
+        app.config['MYSQL_DATABASE_SOCKET'] = None
+        app.config['MYSQL_UNIX_SOCKET'] = None
+        app.config['MYSQL_CHARSET'] =  'utf8'
+        app.config['MYSQL_SQL_MODE'] =  None
+        app.config['MYSQL_CURSORCLASS'] =  None
+        app.config['MYSQL_READ_DEFAULT_FILE'] =  None
+        app.config['MYSQL_DB'] = nameDB
+        mysql =MySQL(app)
+
+        cur = mysql.connection.cursor()
+        if cur:
+        
+          return redirect(url_for('traslate'))
+        else :
+            context = {'forms': formas}
+            return render_template('conection.html', **context)
+
+    context = {'forms': formas}
     return render_template('conection.html', **context)
+
+    
+
+   
+
+
+
     
     
 @app.route('/traslate')
