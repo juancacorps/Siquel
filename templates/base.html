@@ -1,20 +1,21 @@
-{% import 'bootstrap/wtf.html' as wtf %}
-{% extends 'bootstrap/base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %} {% extends 'bootstrap/base.html' %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    {% block title %}
-    SQL Es|
-    {% endblock %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+    <meta charset="UTF-8"> {% block title %} SQL Es| {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css')}}">
 </head>
+
 <body>
+    <img src="{{ url_for('static', filename='styles/arena.jpg')}}" class="main-bg__hero-img" alt="Fondo">
     <header>
         {% include 'navbar.html'%}
     </header>
     {% block content %}
-   <h1>Aqui tenes que agregar todo el html</h1>
-   {% endblock %}
+    <h1>BIENVENIDO</h1>
+    <img src="https://image.flaticon.com/icons/png/512/746/746949.png"> {% endblock %}
+
 </body>
+
 </html>

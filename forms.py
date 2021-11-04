@@ -1,13 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from wtforms.fields import TextField, StringField, TextField, IntegerField, SelectField, SubmitField
+from wtforms.fields import TextField, StringField, TextField, IntegerField, PasswordField, SelectField, SubmitField
 
 class Connection_forms(FlaskForm):
     
     host = StringField('Host')
     user = StringField('Usuario')
-    password = StringField('Contraseña')
+    password = PasswordField('Contraseña')
     name_db = StringField('Nombre Base de datos')
     submit = SubmitField('Conectar')
 

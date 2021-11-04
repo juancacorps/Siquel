@@ -98,25 +98,65 @@ def traslate():
                 else:
                     sql_es = sql_es.replace("SELECCIONAR" or "seleccionar", "SELECT") 
                     sql_es = sql_es.replace("DENTRO" or "dentro", "INTO") 
-                    sql_es = sql_es.replace("VALORES" or "valores", "VALUES") 
-                    
+                    sql_es = sql_es.replace("VALORES" or "valores", "VALUES")
+                    sql_es = sql_es.replace("ELIMINAR" or "eliminar", "DELETE") 
+                    sql_es = sql_es.replace("DONFROM" or "donfrom", "WHERE")
+                    sql_es = sql_es.replace("FROMLETE"or "fromlete", "DELETE") 
+                    sql_es = sql_es.replace("ACTUALIZAR"or "actualizar", "UPDATE") 
+            
                          
             except:
-                print(i)
+                pass
+
         
+        
+        sql_es = sql_es.lower()
+        print(sql_es)
+
         try:
-            cur = mysql.connection.cursor()
-            cur.execute(sql_es.lower())
-            flash("Se ejecutó exitosamente")
+            if "delete" in sql_es:
+                print("Siuuuuuuuu")
+                cur = mysql.connection.cursor()
+                print(cur)
+                cur.execute(sql_es)
+                mysql.connection.commit()
+                trans.translate.data = sql_es
+                flash("Se ejecutó exitosamente")
+            elif "insert" in sql_es:
+                print("Siuuuuuuuu")
+                cur = mysql.connection.cursor()
+                print(cur)
+                cur.execute(sql_es)
+                mysql.connection.commit()
+                trans.translate.data = sql_es
+                flash("Se ejecutó exitosamente")
+            elif "update" in sql_es:
+                print("Siuuuuuuuu")
+                cur = mysql.connection.cursor()
+                print(cur)
+                cur.execute(sql_es)
+                mysql.connection.commit()
+                trans.translate.data = sql_es
+                flash("Se ejecutó exitosamente")
+
+            else:
+                print("Nouuuuuuuu")
+                cur = mysql.connection.cursor()
+                cur.execute(sql_es)
+                rv = cur.fetchall()
+                query = list(rv)
+                query = str(query)
+                query = query.replace(')','').replace('(','').replace("'",'').replace('[','').replace(']','')
+                print(query)
+                trans.translate.data = query
         except Exception as e:
             e = str(e).replace('(','').replace(')','').replace('using password: YES','').split(',')
-            translated = GoogleTranslator(source='auto', target='es').translate(e[1])
-            flash(translated)
+            flash(e)
         
             '''hacer lista de querys para comparar la cadena x'''                    
             '''Enviar los querys a la bd'''
         
-        translate = trans.translate.data = sql_es
+        
         return render_template('execute_query.html', **context)
 
     return render_template('execute_query.html', **context)
